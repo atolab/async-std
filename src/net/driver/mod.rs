@@ -229,33 +229,34 @@ impl<T: Evented> Watcher<T> {
     /// will be registered for wakeup when the I/O source becomes writable.
     pub fn poll_write_with<'a, F, R>(
         &'a self,
-        cx: &mut Context<'_>,
+        _cx: &mut Context<'_>,
         mut f: F,
     ) -> Poll<io::Result<R>>
     where
         F: FnMut(&'a T) -> io::Result<R>,
     {
         // If the operation isn't blocked, return its result.
-        match f(self.source.as_ref().unwrap()) {
-            Err(err) if err.kind() == io::ErrorKind::WouldBlock => {}
-            res => return Poll::Ready(res),
-        }
+        // match f(self.source.as_ref().unwrap()) {
+        //     Err(err) if err.kind() == io::ErrorKind::WouldBlock => {}
+        //     res => return Poll::Ready(res),
+        // }
 
-        // Lock the waker list.
-        let mut list = self.entry.writers.lock().unwrap();
+        // // Lock the waker list.
+        // let mut list = self.entry.writers.lock().unwrap();
 
-        // Try running the operation again.
-        match f(self.source.as_ref().unwrap()) {
-            Err(err) if err.kind() == io::ErrorKind::WouldBlock => {}
-            res => return Poll::Ready(res),
-        }
+        // // Try running the operation again.
+        // match f(self.source.as_ref().unwrap()) {
+        //     Err(err) if err.kind() == io::ErrorKind::WouldBlock => {}
+        //     res => return Poll::Ready(res),
+        // }
 
-        // Register the task if it isn't registered already.
-        if list.iter().all(|w| !w.will_wake(cx.waker())) {
-            list.push(cx.waker().clone());
-        }
+        // // Register the task if it isn't registered already.
+        // if list.iter().all(|w| !w.will_wake(cx.waker())) {
+        //     list.push(cx.waker().clone());
+        // }
 
-        Poll::Pending
+        // Poll::Pending
+        Poll::Ready(f(self.source.as_ref().unwrap()))
     }
 
     /// Deregisters and returns the inner I/O source.
