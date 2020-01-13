@@ -255,7 +255,8 @@ impl<T: Evented> Watcher<T> {
         //     list.push(cx.waker().clone());
         // }
 
-        // Poll::Pending
+        // Poll::Pending        
+        print!("Called Watcher::poll_write_with\n");
         Poll::Ready(f(self.source.as_ref().unwrap()))
     }
 
