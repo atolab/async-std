@@ -256,7 +256,13 @@ impl<T: Evented> Watcher<T> {
         // }
 
         // Poll::Pending        
-        print!("Called Watcher::poll_write_with\n");
+        // print!("Called Watcher::poll_write_with\n");
+
+        // match f(self.source.as_ref().unwrap()) {
+        //     Err(err) if err.kind() == io::ErrorKind::WouldBlock => Poll::Ready(Err(err))
+        //     res => return Poll::Ready(res),
+        // }
+
         Poll::Ready(f(self.source.as_ref().unwrap()))
     }
 
